@@ -27,49 +27,77 @@ describe('GET /', () => {
     expect(browser.query("form[action='/signup'] button[type='submit']")).toBeTruthy();
   });
 
+  /**
+   * POST /signup
+   */
   describe('POST /signup', () => {
+
     let _email = 'someguy@example.com';
     let _message = 'I need help making fat stacks';
-    beforeEach((done) => {
+
+    beforeEach(() => {
       process.env.CONTACT = 'me@example.com';
       process.env.FROM = 'noreply@example.com';
-      browser
-        .fill('email', _email)
-        .fill('message', _message)
-        .pressButton('Send', (err) => {
-          if (err) done.fail(err);        
-          browser.assert.success();       
-          done();            
-        });
     });
 
     afterEach(() => {
       mailer.transport.sentMail = [];
     });
-
-    it('displays success message', () => {
-      browser.assert.text('.alert.alert-success',
-        'Thanks for the note! Check your email: someguy@example.com');
+  
+    describe('success', () => {
+      beforeEach((done) => {
+        browser
+          .fill('email', _email)
+          .fill('message', _message)
+          .pressButton('Send', (err) => {
+            if (err) done.fail(err);        
+            browser.assert.success();       
+            done();            
+          });
+      });
+ 
+      it('displays success message', () => {
+        browser.assert.text('.alert.alert-success',
+          'Thanks for the note! Check your email: someguy@example.com');
+      });
+  
+      it('sends an email to the lead', () => {
+        expect(mailer.transport.sentMail.length).toEqual(2);
+      });
+      
+      it('sends an email to the contact specified in process.env.FROM', () => {
+        expect(mailer.transport.sentMail[0].data.to).toEqual(process.env.CONTACT);
+        expect(mailer.transport.sentMail[0].data.from).toEqual(process.env.FROM);
+        expect(mailer.transport.sentMail[0].data.subject).toEqual('Message from someguy@example.com');
+        expect(mailer.transport.sentMail[0].data.text).toContain(_message);
+      });
+  
+      it('sends an email to the lead', () => {
+        expect(mailer.transport.sentMail[1].data.to).toEqual(_email);
+        expect(mailer.transport.sentMail[1].data.from).toEqual(process.env.FROM);
+        expect(mailer.transport.sentMail[1].data.subject).toEqual('Message received!');
+        expect(mailer.transport.sentMail[1].data.text).toContain(_message);
+      });
     });
+    describe('failure', () => {
+      beforeEach((done) => {
+        spyOn(mailer.transporter, "sendMail").and.callFake((opts, done) => {
+          return done('ERROR');
+        });
+        browser
+          .fill('email', _email)
+          .fill('message', _message)
+          .pressButton('Send', (err) => {
+            if (err) done.fail(err);        
+            browser.assert.success();       
+            done();            
+          });
+      });
 
-    it('sends an email to the lead', () => {
-      expect(mailer.transport.sentMail.length).toEqual(2);
+      it('displays a failure message', () => {
+        browser.assert.text('.alert.alert-danger', 'Your message could not be sent');
+      });
+ 
     });
-    
-    it('sends an email to the contact specified in process.env.FROM', () => {
-      expect(mailer.transport.sentMail[0].data.to).toEqual(process.env.CONTACT);
-      expect(mailer.transport.sentMail[0].data.from).toEqual(process.env.FROM);
-      expect(mailer.transport.sentMail[0].data.subject).toEqual('Message from someguy@example.com');
-      expect(mailer.transport.sentMail[0].data.text).toContain(_message);
-    });
-
-    it('sends an email to the lead', () => {
-      expect(mailer.transport.sentMail[1].data.to).toEqual(_email);
-      expect(mailer.transport.sentMail[1].data.from).toEqual(process.env.FROM);
-      expect(mailer.transport.sentMail[1].data.subject).toEqual('Message received!');
-      expect(mailer.transport.sentMail[1].data.text).toContain(_message);
-    });
-
-
   });
 });
