@@ -9,7 +9,6 @@ const session = require('express-session');
 const flash = require('connect-flash');
 
 const index = require('./routes/index');
-const users = require('./routes/users');
 
 const app = express();
 
@@ -35,7 +34,6 @@ app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

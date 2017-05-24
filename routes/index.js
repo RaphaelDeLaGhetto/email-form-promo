@@ -17,9 +17,7 @@ router.post('/signup', (req, res, next) => {
     subject: `Message from ${req.body.email}`,
     text: req.body.message
   };
-          console.log('HERE ');
   mailer.transporter.sendMail(siteContactOptions, (error, info) => {
-          console.log('now HERE ' + error);
     if (error) {
       return res.sendStatus(501);
     }
