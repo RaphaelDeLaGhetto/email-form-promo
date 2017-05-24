@@ -26,3 +26,21 @@ npm start
 npm test
 ```
 
+# Production                   
+
+Clone and install:             
+
+```
+npm install --production       
+```
+
+## Set up environment          
+  
+Paste the following into a `.env` file:
+  
+```
+CONTACT=you@example.com
+FROM=noreply@example.com
+PASSWORD=
+```
+
