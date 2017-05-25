@@ -1,8 +1,84 @@
 body {
-  padding: 50px;
+  margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+/**
+ * Buttons
+ */
+button {
+  -webkit-appearance: none; /* for iOS */
+  background-color: #00cc00;
+  font-size: 1.25em;
+  padding: .25em .75em .25em .75em;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+}
+
+/**
+ * Message form
+ */
+form {
+  margin: auto;
+  width: 100%;
+  font-size: 1.5em;
+  padding-top: 1em;
+  margin-bottom: 1em;
+}
+
+@media all and (min-width: 900px) {
+  form {
+    width: 50%;
+  }
+}
+
+input {
+  -webkit-box-sizing: border-box; /* for iOS */
+  -webkit-appearance: none; /* for iOS */
+}
+
+fieldset {
+  border: 0;
+  width: 80%;
+  margin: auto;
+}
+
+fieldset label {
+  display: block;
+}
+
+fieldset input,
+fieldset textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+fieldset button {
+  float: right;
+}
+
+/**
+ * Alerts
+ */
+.alert {
+  padding: 20px;
+  color: white;
+  margin-bottom: 15px;
+  font-size: 2em;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.alert-success {
+  background-color: #4caf50; /* Green */
+}
+
+.alert-danger {
+  background-color: #f44336; /* Red */
 }

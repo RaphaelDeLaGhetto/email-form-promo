@@ -2,16 +2,23 @@
 <html>
   <head>
     <title><%= process.env.TITLE %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <%- include partials/messages.ejs %>
     <form action="/signup" method="post">
-      <label for="email">
-      <input name="email" type="email" placeholder="someguy@example.ca" value='<%= email %>'>
-      <label>Message</label>          
-      <textarea name='message' rows='5' placeholder='Keep me posted...'><%= message %></textarea>
-      <button id='send-email-button' type='submit'>Send</button>
+      <fieldset>
+        <label for="email">Email</label>
+        <input name="email" type="email" placeholder="someguy@example.ca" value='<%= email %>'>
+      </fieldset>
+      <fieldset>
+        <label for="message">Message</label>
+        <textarea name='message' rows='5' placeholder='Keep me posted...'><%= message %></textarea>
+      </fieldset>
+      <fieldset>
+        <button id='send-email-button' type='submit'>Send</button>
+      </fieldset>
     </form>
   </body>
 </html>
