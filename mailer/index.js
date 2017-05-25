@@ -1,7 +1,6 @@
 'use strict';
 
 const nodemailer = require('nodemailer');
-const mockTransport = require('nodemailer-mock-transport');
 
 module.exports = function() {
   let env = process.env.NODE_ENV || 'development';
@@ -23,6 +22,7 @@ module.exports = function() {
     };
   }
   else {
+    const mockTransport = require('nodemailer-mock-transport');
     transport = mockTransport({
       foo: 'bar'
     });
