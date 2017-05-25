@@ -27,6 +27,21 @@ describe('GET /', () => {
     expect(browser.query("form[action='/signup'] button[type='submit']")).toBeTruthy();
   });
 
+  describe('ENV config', () => {
+    beforeEach((done) => {
+      process.env.TITLE = 'Custom Title';
+      browser.visit('/', (err) => {
+        if (err) done.fail(err);
+        browser.assert.success();
+        done();
+      });
+    });
+
+    it('shows the email question form', () => {
+      expect(browser.query("title").innerHTML).toEqual('Custom Title');
+    });
+  });
+
   /**
    * POST /signup
    */

@@ -10,7 +10,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
  * GET /
  */
 router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Express', messages: req.flash(), email: '', message: '' });
+  res.render('index', { messages: req.flash(), email: '', message: '' });
 });
 
 /**
@@ -18,11 +18,9 @@ router.get('/', (req, res, next) => {
  */
 router.post('/signup', (req, res, next) => {
   if (!req.body.email.match(EMAIL_REGEX)) {
-    return res.render('index', { title: 'Express',
-                                 messages: { error: 'That is not a valid email' },
+    return res.render('index', { messages: { error: 'That is not a valid email' },
                                  email: req.body.email,
                                  message: req.body.message });
- 
   }
 
   // Send email to main contact
@@ -34,8 +32,7 @@ router.post('/signup', (req, res, next) => {
   };
   mailer.transporter.sendMail(siteContactOptions, (error, info) => {
     if (error) {
-      return res.render('index', { title: 'Express',
-                                   messages: { error: error },
+      return res.render('index', { messages: { error: error },
                                    email: req.body.email,
                                    message: req.body.message });
     }
@@ -51,8 +48,7 @@ router.post('/signup', (req, res, next) => {
     };
     mailer.transporter.sendMail(leadOptions, (error, info) => {
       if (error) {
-        return res.render('index', { title: 'Express',
-                                     messages: { error: error },
+        return res.render('index', { messages: { error: error },
                                      email: req.body.email,
                                      message: req.body.message });
       }

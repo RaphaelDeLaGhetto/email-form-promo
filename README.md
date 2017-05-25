@@ -39,6 +39,8 @@ npm install --production
 Paste the following into a `.env` file:
   
 ```
+TITLE="Email Form Promo"
+# Email
 CONTACT=you@example.com
 FROM=noreply@example.com
 PASSWORD=

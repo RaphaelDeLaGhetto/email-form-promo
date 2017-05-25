@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title><%= process.env.TITLE %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
     <%- include partials/messages.ejs %>
-    <p>Welcome to <%= title %></p>
     <form action="/signup" method="post">
       <label for="email">
       <input name="email" type="email" placeholder="someguy@example.ca" value='<%= email %>'>
