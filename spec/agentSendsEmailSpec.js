@@ -15,9 +15,9 @@ describe('GET /', () => {
   beforeEach((done) => {
     browser = new Browser({ waitDuration: '30s', loadCss: false });
     browser.visit('/', (err) => {
-      if (err) done.fail(err);        
-      browser.assert.success();       
-      done();            
+      if (err) done.fail(err);
+      browser.assert.success();
+      done();
     });
   });
 
@@ -50,9 +50,9 @@ describe('GET /', () => {
           .fill('email', _email)
           .fill('message', _message)
           .pressButton('Send', (err) => {
-            if (err) done.fail(err);        
-            browser.assert.success();       
-            done();            
+            if (err) done.fail(err);
+            browser.assert.success();
+            done();
           });
       });
  
@@ -61,7 +61,7 @@ describe('GET /', () => {
           'Thanks for the note! Check your email: someguy@example.com');
       });
   
-      it('sends an email to the lead', () => {
+      it('sends two emails', () => {
         expect(mailer.transport.sentMail.length).toEqual(2);
       });
       
@@ -71,7 +71,7 @@ describe('GET /', () => {
         expect(mailer.transport.sentMail[0].data.subject).toEqual('Message from someguy@example.com');
         expect(mailer.transport.sentMail[0].data.text).toContain(_message);
       });
-  
+
       it('sends an email to the lead', () => {
         expect(mailer.transport.sentMail[1].data.to).toEqual(_email);
         expect(mailer.transport.sentMail[1].data.from).toEqual(process.env.FROM);
@@ -79,25 +79,65 @@ describe('GET /', () => {
         expect(mailer.transport.sentMail[1].data.text).toContain(_message);
       });
     });
+
     describe('failure', () => {
-      beforeEach((done) => {
-        spyOn(mailer.transporter, "sendMail").and.callFake((opts, done) => {
-          return done('ERROR');
-        });
-        browser
-          .fill('email', _email)
-          .fill('message', _message)
-          .pressButton('Send', (err) => {
-            if (err) done.fail(err);        
-            browser.assert.success();       
-            done();            
+
+      describe('potential system side errors', () => {
+        beforeEach((done) => {
+          spyOn(mailer.transporter, "sendMail").and.callFake((opts, done) => {
+            return done('Your message could not be sent');
           });
+          browser
+            .fill('email', _email)
+            .fill('message', _message)
+            .pressButton('Send', (err) => {
+              if (err) done.fail(err);
+              browser.assert.success();
+              done();
+            });
+        });
+
+        it('displays a failure message', () => {
+          browser.assert.text('.alert.alert-danger', 'Your message could not be sent');
+        });
+
+        it('populates the email and message box with previous info', () => {
+          expect(browser.query(`form[action='/signup'] input[name='email'][value='${_email}']`)).toBeTruthy();
+          expect(browser.query("form[action='/signup'] textarea[name='message']").value).toEqual(_message);
+          expect(browser.query("form[action='/signup'] button[type='submit']")).toBeTruthy();
+        });
+
+        it('sends no emails', () => {
+          expect(mailer.transport.sentMail.length).toEqual(0);
+        });
       });
 
-      it('displays a failure message', () => {
-        browser.assert.text('.alert.alert-danger', 'Your message could not be sent');
+      describe('requires a valid email', () => {
+        beforeEach((done) => {
+          browser
+            .fill('email', '')
+            .fill('message', _message)
+            .pressButton('Send', (err) => {
+              if (err) done.fail(err);
+              browser.assert.success();
+              done();
+            });
+        });
+
+        it('displays a failure message', () => {
+          browser.assert.text('.alert.alert-danger', 'That is not a valid email');
+        });
+  
+        it('populates the email and message box with previous info', () => {
+          expect(browser.query(`form[action='/signup'] input[name='email'][value='']`)).toBeTruthy();
+          expect(browser.query("form[action='/signup'] textarea[name='message']").value).toEqual(_message);
+          expect(browser.query("form[action='/signup'] button[type='submit']")).toBeTruthy();
+        });
+  
+        it('sends no emails', () => {
+          expect(mailer.transport.sentMail.length).toEqual(0);
+        });
       });
- 
     });
   });
 });

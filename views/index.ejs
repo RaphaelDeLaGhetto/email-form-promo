@@ -10,9 +10,9 @@
     <p>Welcome to <%= title %></p>
     <form action="/signup" method="post">
       <label for="email">
-      <input name="email" type="email" placeholder="someguy@example.ca">
+      <input name="email" type="email" placeholder="someguy@example.ca" value='<%= email %>'>
       <label>Message</label>          
-      <textarea name='message' rows='5' placeholder='Keep me posted...'></textarea>
+      <textarea name='message' rows='5' placeholder='Keep me posted...'><%= message %></textarea>
       <button id='send-email-button' type='submit'>Send</button>
     </form>
   </body>
